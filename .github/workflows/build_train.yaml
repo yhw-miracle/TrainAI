@@ -4,20 +4,7 @@ on:
     branches:
       - main
 jobs:
-  # build-train:
-  #   runs-on: ubuntu-22.04
-  #   steps:
-  #     - uses: docker/login-action@v3
-  #       with:
-  #         username: ${{ secrets.DOCKER_USERNAME }}
-  #         password: ${{ secrets.DOCKER_PASSWORD }}
-  #     - uses: docker/setup-buildx-action@v3
-  #     - uses: docker/build-push-action@v5
-  #       with:
-  #         file: ./train/Dockerfile
-  #         push: true
-  #         tags: ${{ secrets.DOCKER_USERNAME }}/train:v1
-  build-inferecne-train:
+  build-train:
     runs-on: ubuntu-22.04
     steps:
       - uses: docker/login-action@v3
@@ -28,6 +15,20 @@ jobs:
       - uses: docker/setup-buildx-action@v3
       - uses: docker/build-push-action@v5
         with:
-          file: ./inference/Dockerfile
+          file: ./train/Dockerfile
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/inference:v1
+          tags: ${{ secrets.DOCKER_USERNAME }}/train:v1
+  # build-inferecne-train:
+  #   runs-on: ubuntu-22.04
+  #   steps:
+  #     - uses: docker/login-action@v3
+  #       with:
+  #         registry: registry.cn-hangzhou.aliyuncs.com
+  #         username: ${{ secrets.DOCKER_USERNAME }}
+  #         password: ${{ secrets.DOCKER_PASSWORD }}
+  #     - uses: docker/setup-buildx-action@v3
+  #     - uses: docker/build-push-action@v5
+  #       with:
+  #         file: ./inference/Dockerfile
+  #         push: true
+  #         tags: ${{ secrets.DOCKER_USERNAME }}/inference:v1
