@@ -1,0 +1,3 @@
+registry.cn-hangzhou.aliyuncs.com/yhwmiracle:
+  username: ${{ secrets.ALIYUN_DOCKER_USERNAME }}
+  password: ${{ secrets.ALIYUNDOCKER_PASSWORD }}
