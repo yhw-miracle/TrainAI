@@ -69,13 +69,14 @@ RUN apt install --no-install-recommends -y \
     g++ \
     libturbojpeg \
     vim \
-    axel
+    axel \
+    wget \
+    curl
 ARG OPENCV_VERSION=4.x
 RUN axel https://github.com/opencv/opencv/archive/refs/heads/${OPENCV_VERSION}.zip -o opencv.zip && unzip opencv.zip && rm -v opencv.zip && mv opencv-${OPENCV_VERSION} /opencv
 RUN axel https://github.com/opencv/opencv_contrib/archive/refs/heads/${OPENCV_VERSION}.zip -o opencv_contrib.zip && unzip opencv_contrib.zip && rm -v opencv_contrib.zip && mv opencv_contrib-${OPENCV_VERSION} /opencv_contrib
 
-COPY Video_Codec_SDK_12.1.14.zip /workspace/Video_Codec_SDK_12.1.14.zip
-RUN unzip /workspace/Video_Codec_SDK_12.1.14.zip -d /workspace/ && rm -v /workspace/Video_Codec_SDK_12.1.14.zip && cd /workspaceVideo_Codec_SDK_12.1.14 && cp Interface/* /usr/local/cuda/targets/x86_64-linux/include/ && cp Lib/linux/stubs/x86_64/* /usr/local/cuda/targets/x86_64-linux/lib/stubs/ && cd /usr/local/cuda/targets/x86_64-linux/lib/stubs/ && ln -s libcuda.so libcuda.so.1 && ln -s libnvcuvid.so libnvcuvid.so.1 && ln -s libnvidia-encode.so libnvidia-encode.so.1
+RUN wget https://github.com/yhw-miracle/TrainAI/releases/download/video_codec_sdk/Video_Codec_SDK_12.1.14.zip -O /workspace/Video_Codec_SDK_12.1.14.zip --progress=bar:force:noscroll --no-check-certificate && unzip /workspace/Video_Codec_SDK_12.1.14.zip -d /workspace/ && rm -v /workspace/Video_Codec_SDK_12.1.14.zip && cd /workspaceVideo_Codec_SDK_12.1.14 && cp Interface/* /usr/local/cuda/targets/x86_64-linux/include/ && cp Lib/linux/stubs/x86_64/* /usr/local/cuda/targets/x86_64-linux/lib/stubs/ && cd /usr/local/cuda/targets/x86_64-linux/lib/stubs/ && ln -s libcuda.so libcuda.so.1 && ln -s libnvcuvid.so libnvcuvid.so.1 && ln -s libnvidia-encode.so libnvidia-encode.so.1
 RUN mkdir /opencv/build && cd /opencv/build && cmake \
     -D CMAKE_BUILD_TYPE=RELEASE \
     -D BUILD_PYTHON_SUPPORT=ON \
