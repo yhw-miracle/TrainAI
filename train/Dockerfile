@@ -2,6 +2,9 @@ FROM ubuntu:22.04
 
 ARG PYTHON_VERSION=3.10
 
+SHELL ["/bin/bash", "-c"]
+ENV DEBIAN_FRONTEND=noninteractive TZ=Asia/Shanghai
+
 RUN apt-get update -qq --fix-missing && \
     apt-get install -y --no-install-recommends software-properties-common && \
     if [[ "$PYTHON_VERSION" =~ ^(2.7|3.6|3.7)$ ]]; then \
