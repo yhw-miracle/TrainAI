@@ -1,6 +1,13 @@
 FROM nvcr.io/nvidia/tensorrt:23.10-py3
 ENV TZ=Asia/Shanghai
+# install python3-pip
 RUN apt update && apt install -y python3-pip && pip3 install --upgrade pip && pip3 install numpy
+# add CUDA lib PATH
+RUN CUDA_PATH=(/usr/local/cuda-*) && \
+    CUDA=`basename $CUDA_PATH` && \
+    echo "$CUDA_PATH/compat" >> /etc/ld.so.conf.d/${CUDA/./-}.conf && \
+    ldconfig
+# install all dependencies for OpenCV
 RUN apt install --no-install-recommends -y \
     unzip \
     cmake \
@@ -72,11 +79,16 @@ RUN apt install --no-install-recommends -y \
     axel \
     wget \
     curl
+# download OpenCV source
 ARG OPENCV_VERSION=4.x
 RUN axel https://github.com/opencv/opencv/archive/refs/heads/${OPENCV_VERSION}.zip -o opencv.zip && unzip opencv.zip && rm -v opencv.zip && mv opencv-${OPENCV_VERSION} /opencv
 RUN axel https://github.com/opencv/opencv_contrib/archive/refs/heads/${OPENCV_VERSION}.zip -o opencv_contrib.zip && unzip opencv_contrib.zip && rm -v opencv_contrib.zip && mv opencv_contrib-${OPENCV_VERSION} /opencv_contrib
 
+# install Nvidia video codec
 RUN wget https://github.com/yhw-miracle/TrainAI/releases/download/video_codec_sdk/Video_Codec_SDK_12.1.14.zip -O /workspace/Video_Codec_SDK_12.1.14.zip --progress=bar:force:noscroll --no-check-certificate && unzip /workspace/Video_Codec_SDK_12.1.14.zip -d /workspace/ && rm -v /workspace/Video_Codec_SDK_12.1.14.zip && cd /workspace/Video_Codec_SDK_12.1.14 && cp Interface/* /usr/local/cuda/targets/x86_64-linux/include/ && cp Lib/linux/stubs/x86_64/* /usr/local/cuda/targets/x86_64-linux/lib/stubs/ && cd /usr/local/cuda/targets/x86_64-linux/lib/stubs/ && ln -s libcuda.so libcuda.so.1 && ln -s libnvcuvid.so libnvcuvid.so.1 && ln -s libnvidia-encode.so libnvidia-encode.so.1
+
+# prepare build
+ARG PYTHON_VERSION=3.10
 RUN mkdir /opencv/build && cd /opencv/build && cmake \
     -D CMAKE_BUILD_TYPE=RELEASE \
     -D BUILD_PYTHON_SUPPORT=ON \
@@ -131,8 +143,17 @@ RUN mkdir /opencv/build && cd /opencv/build && cmake \
     -D ENABLE_PRECOMPILED_HEADERS=OFF \
     -D OPENCV_ENABLE_NONFREE=ON \
     ..
+
+# build, text and install
 RUN cd /opencv/build && make -j$(nproc) && make install && ldconfig
+# gdal
 RUN apt install -y gdal-bin python3-gdal
+# clean
 RUN rm -rf /opencv /opencv_contrib /var/lib/apt/lists/*
+# install python packages
 RUN pip3 install --no-cache tritonclient[all] tqdm pyturbojpeg pika scipy PyYAML matplotlib requests flask minio lapx ffmpeg-python xlrd xlwt openpyxl confluent_kafka
+# install yolo train python packages
+RUN pip3 install --no-cache torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
+RUN pip3 install --no-cache onnxruntime-gpu
+RUN pip3 install --no-cache ultralytics==8.2.1
 ENV GST_PLUGIN_FEATURE_RANK="nvcodec:256,nvh264dec:256,nvh265dec:256,nvvp9dec:256,nvvp8dec:256,nvh264enc:256,nvh265enc:256,avdec_h265:128,avdec_h264:128,avdec_vp9:128,avdec_vp8:128,avenc_h264_omx:128"
