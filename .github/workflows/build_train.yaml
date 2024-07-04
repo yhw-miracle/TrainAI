@@ -13,9 +13,9 @@ jobs:
       - run: |
           ls -alh /home/runner/work/TrainAI
       - run: |
-          ls -alh /home/runner/work/TrainAI/train
-      - run: |
-          docker buildx build . --platform linux/amd64 --tag ${{ secrets.ALIYUN_DOCKER_REGISTRY }}/${{ secrets.ALIYUN_DOCKER_USERNAME }}/train:v1 --file /home/runner/work/TrainAI/train/Dockerfile --push
+          ls -alh /home/runner/work/TrainAI/TrainAI
+      # - run: |
+      #     docker buildx build . --platform linux/amd64 --tag ${{ secrets.ALIYUN_DOCKER_REGISTRY }}/${{ secrets.ALIYUN_DOCKER_USERNAME }}/train:v1 --file /home/runner/work/TrainAI/train/Dockerfile --push
   # build-inferecne-train:
   #   runs-on: ubuntu-22.04
   #   steps:
