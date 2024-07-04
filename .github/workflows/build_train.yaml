@@ -17,16 +17,6 @@ jobs:
           file: ./train/Dockerfile
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/train:v1
-  sync-image:
-    runs-on: ubuntu-22.04
-    needs: build-train
-    steps:
-      - uses: hhyasdf/image-sync-action@v1.1
-        with:
-          auth_file: ./auth.yaml
-          image_file: ./train/train-image.yaml
-          version: v1
-          proc: 20
   # build-inferecne-train:
   #   runs-on: ubuntu-22.04
   #   steps:
