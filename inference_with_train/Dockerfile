@@ -1,5 +1,4 @@
-# FROM nvcr.io/nvidia/tensorrt:23.10-py3
-FROM pytorch/pytorch:2.3.1-cuda12.1-cudnn8-runtime
+FROM nvcr.io/nvidia/tensorrt:23.10-py3
 ENV TZ=Asia/Shanghai
 # install python3-pip
 RUN apt update && apt install -y python3-pip && pip3 install --upgrade pip && pip3 install numpy
@@ -156,7 +155,7 @@ RUN rm -rf /opencv /opencv_contrib /var/lib/apt/lists/*
 # install python packages
 RUN pip3 install --no-cache tritonclient[all] tqdm pyturbojpeg pika scipy PyYAML matplotlib requests flask minio lapx ffmpeg-python xlrd xlwt openpyxl confluent_kafka
 # install yolo train python packages
-# RUN pip3 install --no-cache torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
+RUN pip3 install --no-cache torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
 RUN pip3 install --no-cache tensorrt
 RUN pip3 install --no-cache onnxruntime-gpu
 RUN pip3 install --no-cache ultralytics==8.2.1
