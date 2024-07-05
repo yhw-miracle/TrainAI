@@ -14,15 +14,15 @@ jobs:
     steps:
       - uses: docker/setup-buildx-action@v3
       - run: |
-          wget https://github.com/yhw-miracle/TrainAI/releases/download/Train-Dockerfile/Dockerfile -O Dockerfile_train
+          sudo wget https://github.com/yhw-miracle/TrainAI/releases/download/Train-Dockerfile/Dockerfile -O /mnt/Dockerfile_train
       # - run: |
       #     docker login -u ${{ secrets.ALIYUN_DOCKER_USERNAME }} ${{ secrets.ALIYUN_DOCKER_REGISTRY }} --password ${{ secrets.ALIYUN_DOCKER_PASSWORD }}
       # - run: |
-      #     docker buildx build . --platform linux/amd64 --tag ${{ secrets.ALIYUN_DOCKER_REGISTRY }}/${{ secrets.ALIYUN_DOCKER_USERNAME }}/inference:v1.1 --file Dockerfile_train --push
+      #     docker buildx build . --platform linux/amd64 --tag ${{ secrets.ALIYUN_DOCKER_REGISTRY }}/${{ secrets.ALIYUN_DOCKER_USERNAME }}/inference:v1.1 --file /mnt/Dockerfile_train --push
       - run: |
-          docker login -u ${{ secrets.DOCKER_USERNAME }} --password ${{ secrets.DOCKER_PASSWORD }}
+          sudo docker login -u ${{ secrets.DOCKER_USERNAME }} --password ${{ secrets.DOCKER_PASSWORD }}
       - run: |
-          docker buildx build . --platform linux/amd64 --tag ${{ secrets.DOCKER_USERNAME }}/train:v1 --file Dockerfile_train --push
+          sudo docker buildx build . --platform linux/amd64 --tag ${{ secrets.DOCKER_USERNAME }}/train:v1 --file /mnt/Dockerfile_train --push
   # build-inference:
   #   runs-on: ubuntu-22.04
   #   steps:
