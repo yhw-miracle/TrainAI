@@ -1,4 +1,5 @@
-FROM nvcr.io/nvidia/tensorrt:23.10-py3
+# FROM nvcr.io/nvidia/tensorrt:23.10-py3
+FROM nvcr.io/nvidia/pytorch:23.10-py3
 ENV TZ=Asia/Shanghai
 # install python3-pip
 RUN apt update && apt install -y python3-pip && pip3 install --upgrade pip && pip3 install numpy
@@ -148,8 +149,6 @@ RUN mkdir /opencv/build && cd /opencv/build && cmake \
 RUN cd /opencv/build && make -j$(nproc) && make install && ldconfig
 # gdal
 RUN apt install -y gdal-bin python3-gdal
-# install all dependencies for YOLO
-RUN apt update && apt install --no-install-recommends -y gcc git zip unzip curl htop libgl1 libglib2.0-0 libpython3-dev gnupg g++ libusb-1.0-0 libsm6 openssl
 # clean
 RUN rm -rf /opencv /opencv_contrib /var/lib/apt/lists/*
 # install python packages
@@ -157,7 +156,7 @@ RUN pip3 install --no-cache tritonclient[all] tqdm pyturbojpeg pika scipy PyYAML
 # install yolo train python packages
 RUN pip3 install --no-cache torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
 RUN pip3 install --no-cache tensorrt
-RUN pip3 install --no-cache onnxruntime-gpu
+RUN pip3 install --no-cache onnxruntime-gpu onnx
 RUN pip3 install --no-cache ultralytics==8.2.1
 ADD https://github.com/ultralytics/assets/releases/download/v0.0.0/Arial.ttf https://github.com/ultralytics/assets/releases/download/v0.0.0/Arial.Unicode.ttf /root/.config/Ultralytics/
 ENV GST_PLUGIN_FEATURE_RANK="nvcodec:256,nvh264dec:256,nvh265dec:256,nvvp9dec:256,nvvp8dec:256,nvh264enc:256,nvh265enc:256,avdec_h265:128,avdec_h264:128,avdec_vp9:128,avdec_vp8:128,avenc_h264_omx:128"

@@ -9,20 +9,20 @@ jobs:
     steps:
       - run: |
           df -h
-  build-train:
-    runs-on: ubuntu-22.04
-    steps:
-      - uses: docker/setup-buildx-action@v3
-      - run: |
-          sudo wget https://github.com/yhw-miracle/TrainAI/releases/download/Train-Dockerfile/Dockerfile -O /mnt/Dockerfile_train
-      # - run: |
-      #     docker login -u ${{ secrets.ALIYUN_DOCKER_USERNAME }} ${{ secrets.ALIYUN_DOCKER_REGISTRY }} --password ${{ secrets.ALIYUN_DOCKER_PASSWORD }}
-      # - run: |
-      #     docker buildx build . --platform linux/amd64 --tag ${{ secrets.ALIYUN_DOCKER_REGISTRY }}/${{ secrets.ALIYUN_DOCKER_USERNAME }}/inference:v1.1 --file /mnt/Dockerfile_train --push
-      - run: |
-          sudo docker login -u ${{ secrets.DOCKER_USERNAME }} --password ${{ secrets.DOCKER_PASSWORD }}
-      - run: |
-          sudo docker buildx build . --platform linux/amd64 --tag ${{ secrets.DOCKER_USERNAME }}/train:v1 --file /mnt/Dockerfile_train --push
+  # build-train:
+  #   runs-on: ubuntu-22.04
+  #   steps:
+  #     - uses: docker/setup-buildx-action@v3
+  #     - run: |
+  #         sudo wget https://github.com/yhw-miracle/TrainAI/releases/download/Train-Dockerfile/Dockerfile -O /mnt/Dockerfile_train
+  #     # - run: |
+  #     #     docker login -u ${{ secrets.ALIYUN_DOCKER_USERNAME }} ${{ secrets.ALIYUN_DOCKER_REGISTRY }} --password ${{ secrets.ALIYUN_DOCKER_PASSWORD }}
+  #     # - run: |
+  #     #     docker buildx build . --platform linux/amd64 --tag ${{ secrets.ALIYUN_DOCKER_REGISTRY }}/${{ secrets.ALIYUN_DOCKER_USERNAME }}/inference:v1.1 --file /mnt/Dockerfile_train --push
+  #     - run: |
+  #         sudo docker login -u ${{ secrets.DOCKER_USERNAME }} --password ${{ secrets.DOCKER_PASSWORD }}
+  #     - run: |
+  #         sudo docker buildx build . --platform linux/amd64 --tag ${{ secrets.DOCKER_USERNAME }}/train:v1 --file /mnt/Dockerfile_train --push
   # build-inference:
   #   runs-on: ubuntu-22.04
   #   steps:
@@ -37,20 +37,20 @@ jobs:
   #         docker login -u ${{ secrets.DOCKER_USERNAME }} --password ${{ secrets.DOCKER_PASSWORD }}
   #     - run: |
   #         docker buildx build . --platform linux/amd64 --tag ${{ secrets.DOCKER_USERNAME }}/inference:v1.2 --file Dockerfile_inference --push
-  # build-inference-train:
-  #   runs-on: ubuntu-22.04
-  #   # needs: [build-train, build-inference]
-  #   steps:
-  #     - uses: docker/setup-buildx-action@v3
-  #     - run: |
-  #         sudo wget https://github.com/yhw-miracle/TrainAI/releases/download/Inference-Train-Dockerfile/Dockerfile -O /mnt/Dockerfile_inference_train
-  #     - run: |
-  #         cd /mnt
-  #     # - run: |
-  #     #     docker login -u ${{ secrets.ALIYUN_DOCKER_USERNAME }} ${{ secrets.ALIYUN_DOCKER_REGISTRY }} --password ${{ secrets.ALIYUN_DOCKER_PASSWORD }}
-  #     # - run: |
-  #     #     docker buildx build . --platform linux/amd64 --tag ${{ secrets.ALIYUN_DOCKER_REGISTRY }}/${{ secrets.ALIYUN_DOCKER_USERNAME }}/inference:v1 --file /mnt/Dockerfile_inference_train --push
-  #     - run: |
-  #         sudo docker login -u ${{ secrets.DOCKER_USERNAME }} --password ${{ secrets.DOCKER_PASSWORD }}
-  #     - run: |
-  #         sudo docker buildx build . --platform linux/amd64 --tag ${{ secrets.DOCKER_USERNAME }}/inference:v1 --file /mnt/Dockerfile_inference_train --push
+  build-inference-train:
+    runs-on: ubuntu-22.04
+    # needs: [build-train, build-inference]
+    steps:
+      - uses: docker/setup-buildx-action@v3
+      - run: |
+          sudo wget https://github.com/yhw-miracle/TrainAI/releases/download/Inference-Train-Dockerfile/Dockerfile -O /mnt/Dockerfile_inference_train
+      - run: |
+          cd /mnt
+      # - run: |
+      #     docker login -u ${{ secrets.ALIYUN_DOCKER_USERNAME }} ${{ secrets.ALIYUN_DOCKER_REGISTRY }} --password ${{ secrets.ALIYUN_DOCKER_PASSWORD }}
+      # - run: |
+      #     docker buildx build . --platform linux/amd64 --tag ${{ secrets.ALIYUN_DOCKER_REGISTRY }}/${{ secrets.ALIYUN_DOCKER_USERNAME }}/inference:v1 --file /mnt/Dockerfile_inference_train --push
+      - run: |
+          sudo docker login -u ${{ secrets.DOCKER_USERNAME }} --password ${{ secrets.DOCKER_PASSWORD }}
+      - run: |
+          sudo docker buildx build . --platform linux/amd64 --tag ${{ secrets.DOCKER_USERNAME }}/inference:v1 --file /mnt/Dockerfile_inference_train --push
