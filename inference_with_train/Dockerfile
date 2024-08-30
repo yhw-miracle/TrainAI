@@ -146,8 +146,15 @@ RUN mkdir /opencv/build && cd /opencv/build && cmake \
 
 # build, text and install
 RUN cd /opencv/build && make -j$(nproc) && make install && ldconfig
+RUN ln -s /usr/local/include/opencv4/opencv2 /usr/local/include/opencv2
 # gdal
-RUN apt install -y gdal-bin python3-gdal
+RUN apt install -y sqlite3 libsqlite3-dev build-essential cmake libcurl4 libcurl4-nss-dev python3 libpython3-all-dev libtiff5-dev
+RUN axel https://github.com/OSGeo/PROJ/archive/refs/tags/9.4.1.zip -o proj-9.4.1.zip && unzip proj-9.4.1.zip && rm -v proj-9.4.1.zip && mv proj-9.4.1 /proj-9.4.1
+RUN axel https://github.com/OSGeo/gdal/archive/refs/tags/v3.9.2.zip -o gdal-3.9.2.zip && unzip gdal-3.9.2.zip && rm -v gdal-3.9.2.zip && mv gdal-3.9.2 /gdal-3.9.2
+RUN cd /proj-9.4.1 && mkdir /proj-9.4.1/build && cd /proj-9.4.1/build && cmake .. && make -j$(nproc) && make install
+RUN cd /gdal-3.9.2 && mkdir /gdal-3.9.2/build && cd /gdal-3.9.2/build && cmake .. && make -j$(nproc) && make install
+RUN ldconfig
+# RUN apt install -y gdal-bin python3-gdal
 # clean
 RUN rm -rf /opencv /opencv_contrib /var/lib/apt/lists/*
 # install python packages
